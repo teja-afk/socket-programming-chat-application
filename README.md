@@ -28,13 +28,6 @@ socket-programming-chat-application/
 │
 └── README.md
 
-
----
-<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/4a529799-d3f1-4b0f-af0d-e41b795bb35d" />
-
-<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/54220abb-c093-419e-b22d-3d1cc27520d1" />
-
-
 ## ✨ Features
 
 - TCP-based client–server communication
@@ -66,6 +59,9 @@ socket-programming-chat-application/
 5. Spawns a new thread for each connected client
 6. Receives messages and broadcasts them to all connected clients
 
+---
+<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/4a529799-d3f1-4b0f-af0d-e41b795bb35d" />
+
 ### Client
 1. Initializes the Winsock library
 2. Connects to the server using IP and port
@@ -73,6 +69,8 @@ socket-programming-chat-application/
    - One for sending messages
    - One for receiving messages
 4. Displays incoming messages in real time
+
+<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/54220abb-c093-419e-b22d-3d1cc27520d1" />
 
 ---
 
