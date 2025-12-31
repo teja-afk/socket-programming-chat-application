@@ -30,6 +30,10 @@ socket-programming-chat-application/
 
 
 ---
+<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/4a529799-d3f1-4b0f-af0d-e41b795bb35d" />
+
+<img width="1024" height="1536" alt="image" src="https://github.com/user-attachments/assets/54220abb-c093-419e-b22d-3d1cc27520d1" />
+
 
 ## ✨ Features
 
