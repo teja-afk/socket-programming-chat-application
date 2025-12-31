@@ -1,20 +1,104 @@
-// client.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <WinSock2.h>
+#include <Ws2tcpip.h>
+#include <thread>
+#include <string>
 
-int main()
-{
-    std::cout << "Hello World!\n";
+using namespace std;
+
+#pragma comment(lib, "ws2_32.lib")
+
+/*
+	initialize the WinSock library
+
+	create a socket
+	connect to the server
+	send/receive 
+	close the socket
+*/
+
+bool Initialization() {
+
+	WSADATA data;
+	return WSAStartup(MAKEWORD(2, 2), &data) == 0;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void SendMsg(SOCKET s) {
+	cout << "Enter your chat name: " << endl;
+	string name;
+	getline(cin, name);
+	string message;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+	while (1) {
+		getline(cin, message);
+		string msg = name + " : " + message;
+		int bytesend = send(s, msg.c_str(), msg.length(), 0);
+		if (bytesend == SOCKET_ERROR) {
+			cout << "Error sending message" << endl;
+			break;
+		}
+
+		if (message == "quit") {
+			cout << "Stopping Application" << endl;
+			break;
+		}
+	}
+	closesocket(s);
+	WSACleanup();
+}
+
+void ReceiveMsg(SOCKET s) {
+	char buffer[4096];
+	int recvlength;
+	string msg = "";
+	while (1) {
+		recvlength = recv(s, buffer, sizeof(buffer), 0);
+		if (recvlength <= 0) {
+			cout << "disconneted from the server" << endl;
+			break;
+		}
+		else {
+			msg = string(buffer, recvlength);
+			cout << msg << endl;
+		}
+	}
+}
+
+int main() {
+
+	if(!Initialization()) {
+		cout << "initialize winsock failed " << endl;
+		return 1;
+	}
+
+	SOCKET s = socket(AF_INET, SOCK_STREAM, 0);
+	if (s == INVALID_SOCKET) {
+		cout << "invalid socket created " << endl;
+		return 1;
+	}
+
+	int port = 12345;
+	string serveraddress = "127.0.0.1";
+	sockaddr_in serveraddr;
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_port = htons(port);
+	inet_pton(AF_INET, serveraddress.c_str(), &(serveraddr.sin_addr));
+
+	if(connect(s, reinterpret_cast<sockaddr*>(&serveraddr), sizeof(serveraddr)) == SOCKET_ERROR) {
+		cout << "not able to connect to server " << endl;
+		cout << ": " << WSAGetLastError();
+		closesocket(s);
+		WSACleanup();
+		return 1;
+	}
+
+	cout << "successfully connect to server" << endl;
+
+	thread senderThread(SendMsg, s);
+	thread receiver(ReceiveMsg, s);
+
+	senderThread.join();
+	receiver.join();
+
+	return 0;
+}
